@@ -27,7 +27,7 @@ obj.meetingfile = hs.configdir .. '/zoomjoin.json'
 --- zoomjoin.meetings
 --- Variable
 --- Table of meeting definition objects.
-obj.meetings = {}
+obj.meetings = nil
 
 --- zoomjoin.autosave
 --- Variable
