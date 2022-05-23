@@ -179,7 +179,7 @@ end
 ---  * None
 ---
 --- Notes:
----  * Called automatically by pathwatcher and start method. Only needed if start() is not called.
+---  * Called automatically by pathwatcher and start method. Only needed if start() is not called or to manually reload the configuration file.
 function obj:loadConfig()
     self.meetings = hs.json.read(self.meetingfile) or {}
 end
