@@ -87,6 +87,16 @@ function obj:makeMenu()
                         end
                     end,
                 },
+                {
+                    title = '-',
+                },
+                {
+                    title = 'Reload',
+                    fn = function()
+                        self:loadConfig()
+                        self:makeMenu()
+                    end,
+                },
             },
         },
         {
