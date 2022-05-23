@@ -41,6 +41,51 @@ obj.autosave = true
 -- The zoom menu
 local zoommenu = nil
 
+-- The remove meeting chooser
+local removechooser = nil
+
+local _meetings = {}
+
+local function removeMeetingCB(tab)
+    if not tab then
+        return
+    end
+
+    local ind
+    for i, meeting in ipairs(obj.meetings) do
+        if (tab.text == meeting.title) and
+            ((tab.subText == meeting.url) or (tab.subText == meeting.id))
+        then
+            ind = i
+            break
+        end
+    end
+    if ind then
+        table.remove(obj.meetings, ind)
+    end
+
+    obj:makeMenu()
+    if obj.autosave then
+        obj:writeConfig()
+    end
+end
+
+local function newChooser(cb, placeholder)
+    local _chooser = hs.chooser.new(cb)
+    _chooser:rows(5)
+    _chooser:width(40)
+    _chooser:searchSubText(true)
+    _chooser:placeholderText(placeholder)
+
+    -- Clear the query and reset the scroll on dismissal.
+    _chooser:hideCallback(function()
+        _chooser:query('')
+        _chooser:selectedRow(0)
+    end)
+
+    return _chooser
+end
+
 local function launchMeeting(mods, tab) -- luacheck: no unused args
     if not tab or not tab.meeting
     or (not tab.meeting.url and not tab.meeting.id) then
@@ -73,6 +118,7 @@ end
 --- Parameters:
 ---  * None
 function obj:makeMenu()
+    local chooserChoices = {}
     local meetingMenu = {
         {
             title = 'zoomjoin',
@@ -86,6 +132,12 @@ function obj:makeMenu()
                             self:writeConfig()
                         end
                     end,
+                },
+                {
+                    title = 'Remove Meeting',
+                    fn = function()
+                        removechooser:show()
+                    end
                 },
                 {
                     title = '-',
@@ -114,19 +166,37 @@ function obj:makeMenu()
     end
 
     for _, meeting in ipairs(self.meetings) do
+        local disp = meeting.title or meeting.url or meeting.id
+
+        -- Menu entry
         local m = {
-            title = meeting.title or meeting.url or meeting.id,
+            title = disp,
             fn = launchMeeting,
             meeting = meeting,
         }
+
+        -- Chooser entry
+        local c = {
+            text = disp,
+            entry = meeting,
+        }
+
         if (meeting.title ~= meeting.url) and (meeting.title ~= meeting.id) then
             m.tooltip = meeting.url or meeting.id
+            c.subText = meeting.url or meeting.id
         end
 
         meetingMenu[#meetingMenu + 1] = m
+
+        -- Don't include separator entries in the chooser
+        if disp ~= '-' then
+            chooserChoices[#chooserChoices + 1] = c
+        end
     end
 
     zoommenu:setMenu(meetingMenu)
+
+    removechooser:choices(chooserChoices)
 end
 
 --- zoomjoin:addMeeting()
@@ -214,6 +284,8 @@ end
 ---  * The zoomjoin object
 function obj:start()
     zoommenu = hs.menubar.new():setTitle('Zoom')
+
+    removechooser = newChooser(removeMeetingCB, 'Select meeting to remove')
 
     self:loadConfig()
     self:makeMenu()
