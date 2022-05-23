@@ -1,4 +1,4 @@
--- Copyright (c) 2016 Etan Reisner
+-- Copyright (c) 2022 Etan Reisner
 -- luacheck: read globals hs
 
 --- === Zoom Meeting Launcher ===
