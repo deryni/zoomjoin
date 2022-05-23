@@ -75,14 +75,19 @@ end
 function obj:makeMenu()
     local meetingMenu = {
         {
-            title = 'Add Meeting',
-            fn = function()
-                self:addMeeting()
-                self:makeMenu()
-                if self.autosave then
-                    self:writeConfig()
-                end
-            end,
+            title = 'zoomjoin',
+            menu = {
+                {
+                    title = 'Add Meeting',
+                    fn = function()
+                        self:addMeeting()
+                        self:makeMenu()
+                        if self.autosave then
+                            self:writeConfig()
+                        end
+                    end,
+                },
+            },
         },
         {
             title = '-',
