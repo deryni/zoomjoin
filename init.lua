@@ -150,6 +150,9 @@ function obj:addMeeting()
 
     if response == '' then
         return
+    elseif response == '-' then
+        self.meetings[#self.meetings + 1] = {title = '-'}
+        return
     end
 
     local newMeeting = {}
