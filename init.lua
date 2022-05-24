@@ -215,6 +215,9 @@ end
 --- Parameters:
 ---  * None
 ---
+--- Returns:
+---  * `true` if a new entry was added
+---
 --- Notes:
 ---  * zoomjoin:makeMenu must be called to update the menu
 ---  * zoomjoin:writeConfig must be called to save added meeting
@@ -232,6 +235,7 @@ function obj:addMeeting()
     elseif response == '-' then
         if self.meetings[#self.meetings].title ~= '-' then
             self.meetings[#self.meetings + 1] = {title = '-'}
+            return true
         end
         return
     end
@@ -253,6 +257,7 @@ function obj:addMeeting()
     newMeeting.title = title
 
     self.meetings[#self.meetings + 1] = newMeeting
+    return true
 end
 
 --- zoomjoin:loadConfig()
