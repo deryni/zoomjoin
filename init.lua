@@ -34,6 +34,11 @@ obj.meetings = nil
 --- `true` to save meeting configuration after adding a meeting, `false` to require manual saving via menu item
 obj.autosave = true
 
+--- zoomjoin.editmenu
+--- Variable
+--- `true` to display the add/remove submenu, `false` to disable it
+obj.editmenu = true
+
 ----
 
 -- Internals
@@ -119,50 +124,54 @@ end
 ---  * None
 function obj:makeMenu()
     local chooserChoices = {}
-    local meetingMenu = {
-        {
-            title = 'zoomjoin',
-            menu = {
-                {
-                    title = 'Add Meeting',
-                    fn = function()
-                        self:addMeeting()
-                        self:makeMenu()
-                        if self.autosave then
-                            self:writeConfig()
+    local meetingMenu = {}
+    if self.editmenu then
+        meetingMenu = {
+            {
+                title = 'zoomjoin',
+                menu = {
+                    {
+                        title = 'Add Meeting',
+                        fn = function()
+                            self:addMeeting()
+                            self:makeMenu()
+                            if self.autosave then
+                                self:writeConfig()
+                            end
+                        end,
+                    },
+                    {
+                        title = 'Remove Meeting',
+                        fn = function()
+                            removechooser:show()
                         end
-                    end,
-                },
-                {
-                    title = 'Remove Meeting',
-                    fn = function()
-                        removechooser:show()
-                    end
-                },
-                {
-                    title = '-',
-                },
-                {
-                    title = 'Reload',
-                    fn = function()
-                        self:loadConfig()
-                        self:makeMenu()
-                    end,
+                    },
+                    {
+                        title = '-',
+                    },
+                    {
+                        title = 'Reload',
+                        fn = function()
+                            self:loadConfig()
+                            self:makeMenu()
+                        end,
+                    },
                 },
             },
-        },
-        {
-            title = '-',
-        },
-    }
-    if not self.autosave then
-        meetingMenu[#meetingMenu + 1] = {
-            title = 'Save Meetings',
-            fn = function() self:writeConfig() end,
+            {
+                title = '-',
+            },
         }
-        meetingMenu[#meetingMenu + 1] = {
-            title = '-',
-        }
+
+        if not self.autosave then
+            meetingMenu[#meetingMenu + 1] = {
+                title = 'Save Meetings',
+                fn = function() self:writeConfig() end,
+            }
+            meetingMenu[#meetingMenu + 1] = {
+                title = '-',
+            }
+        end
     end
 
     for _, meeting in ipairs(self.meetings) do
