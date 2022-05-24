@@ -230,7 +230,9 @@ function obj:addMeeting()
     if response == '' then
         return
     elseif response == '-' then
-        self.meetings[#self.meetings + 1] = {title = '-'}
+        if self.meetings[#self.meetings].title ~= '-' then
+            self.meetings[#self.meetings + 1] = {title = '-'}
+        end
         return
     end
 
