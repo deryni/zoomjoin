@@ -9,7 +9,7 @@
 
 local obj = {
     name = 'Zoom Join',
-    version = '0.7.0',
+    version = '2',
     author = 'Etan Reisner <deryni@gmail.com>',
     license = 'MPL-2.0',
     homepage = 'https://github.com/deryni/zoomjoin',
