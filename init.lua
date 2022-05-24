@@ -133,10 +133,11 @@ function obj:makeMenu()
                     {
                         title = 'Add Meeting',
                         fn = function()
-                            self:addMeeting()
-                            self:makeMenu()
-                            if self.autosave then
-                                self:writeConfig()
+                            if self:addMeeting() then
+                                self:makeMenu()
+                                if self.autosave then
+                                    self:writeConfig()
+                                end
                             end
                         end,
                     },
