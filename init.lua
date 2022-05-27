@@ -142,6 +142,14 @@ local function launchMeetingCB(mods, tab) -- luacheck: no unused args
     return obj.joinMeeting(meetid, tab.meeting.password)
 end
 
+local function joinMeetingCB()
+    local meeting = _promptMeeting('Join a Zoom Meeting', 'Join Meeting')
+
+    if meeting then
+        return obj.joinMeeting(meeting.url or meeting.id, meeting.password)
+    end
+end
+
 ----
 
 -- Callable functions
@@ -176,6 +184,13 @@ function obj:makeMenu()
                         fn = function()
                             removechooser:show()
                         end
+                    },
+                    {
+                        title = '-',
+                    },
+                    {
+                        title = 'Join Meeting',
+                        fn = joinMeetingCB,
                     },
                     {
                         title = '-',
