@@ -91,7 +91,7 @@ local function newChooser(cb, placeholder)
     return _chooser
 end
 
-local function launchMeeting(mods, tab) -- luacheck: no unused args
+local function launchMeetingCB(mods, tab) -- luacheck: no unused args
     if not tab or not tab.meeting
     or (not tab.meeting.url and not tab.meeting.id) then
         return
@@ -181,7 +181,7 @@ function obj:makeMenu()
         -- Menu entry
         local m = {
             title = disp,
-            fn = launchMeeting,
+            fn = launchMeetingCB,
             meeting = meeting,
         }
 
