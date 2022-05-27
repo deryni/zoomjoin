@@ -95,6 +95,43 @@ local function newChooser(cb, placeholder)
     return _chooser
 end
 
+local function _promptMeeting(title, button)
+    hs.focus()
+
+    local button, response = hs.dialog.textPrompt(title, '', '', button, 'Cancel')
+
+    if button == 'Cancel' then
+        return
+    end
+
+    if response == '' then
+        return
+    elseif response == '-' then
+        return {title = '-'}
+    end
+
+    local meetingInfo = {}
+
+    if response:match('^https://') then
+        -- We got a zoom URL
+        meetingInfo.url = response
+    else
+        -- We got a meeting ID and need to prompt for a password
+        local button2, password = hs.dialog.textPrompt('Enter meeting password', 'Leave blank if none', '', 'Continue', 'Cancel')
+
+        if button2 == 'Cancel' then
+            return
+        end
+
+        meetingInfo.id = response
+        if password ~= '' then
+            meetingInfo.password = password
+        end
+    end
+
+    return meetingInfo
+end
+
 local function launchMeetingCB(mods, tab) -- luacheck: no unused args
     if not tab or not tab.meeting
     or (not tab.meeting.url and not tab.meeting.id) then
@@ -200,43 +237,6 @@ function obj:makeMenu()
     zoommenu:setMenu(meetingMenu)
 
     removechooser:choices(chooserChoices)
-end
-
-local function _promptMeeting(title, button)
-    hs.focus()
-
-    local button, response = hs.dialog.textPrompt(title, '', '', button, 'Cancel')
-
-    if button == 'Cancel' then
-        return
-    end
-
-    if response == '' then
-        return
-    elseif response == '-' then
-        return {title = '-'}
-    end
-
-    local meetingInfo = {}
-
-    if response:match('^https://') then
-        -- We got a zoom URL
-        meetingInfo.url = response
-    else
-        -- We got a meeting ID and need to prompt for a password
-        local button2, password = hs.dialog.textPrompt('Enter meeting password', 'Leave blank if none', '', 'Continue', 'Cancel')
-
-        if button2 == 'Cancel' then
-            return
-        end
-
-        meetingInfo.id = response
-        if password ~= '' then
-            meetingInfo.password = password
-        end
-    end
-
-    return meetingInfo
 end
 
 --- zoomjoin:addMeeting()
