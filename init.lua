@@ -209,6 +209,37 @@ function obj:makeMenu()
     removechooser:choices(chooserChoices)
 end
 
+local function _promptMeeting(title, button)
+    hs.focus()
+
+    local button, response = hs.dialog.textPrompt(title, '', '', button, 'Cancel')
+
+    if button == 'Cancel' then
+        return
+    end
+
+    if response == '' then
+        return
+    elseif response == '-' then
+        return {title = '-'}
+    end
+
+    local meetingInfo = {}
+
+    if response:match('^https://') then
+        -- We got a zoom URL
+        meetingInfo.url = response
+    else
+        -- We got a meeting ID and need to prompt for a password
+        local _, password = hs.dialog.textPrompt('Enter meeting password', 'Leave blank if none', '', 'Continue')
+
+        meetingInfo.id = response
+        meetingInfo.password = password
+    end
+
+    return meetingInfo
+end
+
 --- zoomjoin:addMeeting()
 --- Method
 --- Prompt to add a meeting to the configured meeting definitions.
@@ -223,35 +254,16 @@ end
 ---  * zoomjoin:makeMenu must be called to update the menu
 ---  * zoomjoin:writeConfig must be called to save added meeting
 function obj:addMeeting()
-    hs.focus()
+    local newMeeting = _promptMeeting('Add a new Zoom meeting', 'Add Meeting')
 
-    local button, response = hs.dialog.textPrompt('Add a new Zoom meeting', '', '', 'Add Meeting', 'Cancel')
-
-    if button == 'Cancel' then
+    if not newMeeting then
         return
-    end
-
-    if response == '' then
-        return
-    elseif response == '-' then
+    elseif newMeeting.title == '-' then
         if self.meetings[#self.meetings].title ~= '-' then
-            self.meetings[#self.meetings + 1] = {title = '-'}
+            self.meetings[#self.meetings + 1] = newMeeting
             return true
         end
         return
-    end
-
-    local newMeeting = {}
-
-    if response:match('^https://') then
-        -- We got a zoom URL
-        newMeeting.url = response
-    else
-        -- We got a meeting ID and need to prompt for a password
-        local _, password = hs.dialog.textPrompt('Enter meeting password', 'Leave blank if none', '', 'Continue')
-
-        newMeeting.id = response
-        newMeeting.password = password
     end
 
     local _, title = hs.dialog.textPrompt('Enter meeting title', '', newMeeting.url or newMeeting.id, 'Add')
