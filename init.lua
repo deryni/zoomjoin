@@ -223,7 +223,11 @@ local function _promptMeeting(title, button)
         meetingInfo.url = response
     else
         -- We got a meeting ID and need to prompt for a password
-        local _, password = hs.dialog.textPrompt('Enter meeting password', 'Leave blank if none', '', 'Continue')
+        local button2, password = hs.dialog.textPrompt('Enter meeting password', 'Leave blank if none', '', 'Continue', 'Cancel')
+
+        if button2 == 'Cancel' then
+            return
+        end
 
         meetingInfo.id = response
         meetingInfo.password = password
@@ -258,7 +262,12 @@ function obj:addMeeting()
         return
     end
 
-    local _, title = hs.dialog.textPrompt('Enter meeting title', '', newMeeting.url or newMeeting.id, 'Add')
+    local button, title = hs.dialog.textPrompt('Enter meeting title', '', newMeeting.url or newMeeting.id, 'Add', 'Cancel')
+
+    if button == 'Cancel' then
+        return
+    end
+
     newMeeting.title = title
 
     self.meetings[#self.meetings + 1] = newMeeting
