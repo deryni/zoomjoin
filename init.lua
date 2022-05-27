@@ -230,7 +230,9 @@ local function _promptMeeting(title, button)
         end
 
         meetingInfo.id = response
-        meetingInfo.password = password
+        if password ~= '' then
+            meetingInfo.password = password
+        end
     end
 
     return meetingInfo
