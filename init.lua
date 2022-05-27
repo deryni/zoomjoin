@@ -277,7 +277,7 @@ function obj:addMeeting()
     return true
 end
 
---- zoomjoin.joinMeeting(url[, password])
+--- zoomjoin.joinMeeting(urlorid[, password])
 --- Function
 --- Join a zoom meeting
 ---
@@ -289,24 +289,24 @@ end
 ---  * nil if url not given
 ---  * Result of calling `hs.urlevent.openURLWithBundle` if url or id without password given
 ---  * .......
-function obj.joinMeeting(url, password)
-    if not url then
+function obj.joinMeeting(urlorid, password)
+    if not urlorid then
         return
     end
 
     hs.application.find('zoom.us'):activate()
 
-    if tab.meeting.url then
-        return hs.urlevent.openURLWithBundle(tab.meeting.url, bundleID)
-    elseif tab.meeting.id then
-        if not tab.meeting.password then
-            local url = 'https://zoom.us/j/' .. tab.meeting.id
+    if urlorid:match('^https://') then
+        return hs.urlevent.openURLWithBundle(urlorid, bundleID)
+    end
 
-            return hs.urlevent.openURLWithBundle(url, bundleID)
-        else
-            -- TODO This needs to go through the zoom UI which needs the AX
-            -- stuff as far as I can tell.
-        end
+    if not password then
+        local url = 'https://zoom.us/j/' .. urlorid
+
+        return hs.urlevent.openURLWithBundle(url, bundleID)
+    else
+        -- TODO This needs to go through the zoom UI which needs the AX
+        -- stuff as far as I can tell.
     end
 end
 
