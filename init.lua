@@ -1,7 +1,7 @@
 -- Copyright (c) 2022 Etan Reisner
 -- luacheck: read globals hs
 
---- === Zoom Meeting Launcher ===
+--- === zoomjoin ===
 ---
 --- Join zoom meetings from a chooser / menu
 ---
