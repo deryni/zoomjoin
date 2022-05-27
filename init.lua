@@ -31,7 +31,8 @@ obj.meetings = nil
 
 --- zoomjoin.autosave
 --- Variable
---- `true` to save meeting configuration after adding a meeting, `false` to require manual saving via menu item
+--- `true` to save meeting configuration after adding a meeting,
+--- `false` to require manual saving via menu item
 obj.autosave = true
 
 --- zoomjoin.editmenu
@@ -317,7 +318,8 @@ end
 ---  * None
 ---
 --- Notes:
----  * Called automatically by pathwatcher and start method. Only needed if start() is not called or to manually reload the configuration file.
+---  * Called automatically by start method.
+---  * Only needed if start() is not called or to manually reload the configuration file.
 function obj:loadConfig()
     self.meetings = hs.json.read(self.meetingfile) or {}
 end
@@ -360,7 +362,7 @@ end
 
 --- zoomjoin:stop()
 --- Method
---- Stops the pathwatcher for zoom meeting configuration changes. Deletes the menu.
+--- Deletes the menu.
 ---
 --- Parameters:
 ---  * None
