@@ -43,6 +43,9 @@ obj.editmenu = true
 
 -- Internals
 
+-- The zoom application's bundleID
+local bundleID = 'us.zoom.xos'
+
 -- The zoom menu
 local zoommenu = nil
 
@@ -97,19 +100,8 @@ local function launchMeetingCB(mods, tab) -- luacheck: no unused args
         return
     end
 
-    if tab.meeting.url then
-        hs.application.find('zoom.us'):activate()
-        return hs.urlevent.openURLWithBundle(tab.meeting.url, 'us.zoom.xos')
-    elseif tab.meeting.id then
-        if not tab.meeting.password then
-            local url = 'https://zoom.us/j/' .. tab.meeting.id
-
-            return hs.urlevent.openURLWithBundle(url, 'us.zoom.xos')
-        else
-            -- TODO This needs to go through the zoom UI which needs the AX
-            -- stuff as far as I can tell.
-        end
-    end
+    local meetid = tab.meeting.url or tab.meeting.id
+    return obj.joinMeeting(meetid, tab.meeting.password)
 end
 
 ----
@@ -271,6 +263,39 @@ function obj:addMeeting()
 
     self.meetings[#self.meetings + 1] = newMeeting
     return true
+end
+
+--- zoomjoin.joinMeeting(url[, password])
+--- Function
+--- Join a zoom meeting
+---
+--- Parameters:
+---  * url - A zoom meeting URL or meeting ID
+---  * password - An optional password for the zoom meeting (if using a meeting ID)
+---
+--- Returns:
+---  * nil if url not given
+---  * Result of calling `hs.urlevent.openURLWithBundle` if url or id without password given
+---  * .......
+function obj.joinMeeting(url, password)
+    if not url then
+        return
+    end
+
+    hs.application.find('zoom.us'):activate()
+
+    if tab.meeting.url then
+        return hs.urlevent.openURLWithBundle(tab.meeting.url, bundleID)
+    elseif tab.meeting.id then
+        if not tab.meeting.password then
+            local url = 'https://zoom.us/j/' .. tab.meeting.id
+
+            return hs.urlevent.openURLWithBundle(url, bundleID)
+        else
+            -- TODO This needs to go through the zoom UI which needs the AX
+            -- stuff as far as I can tell.
+        end
+    end
 end
 
 --- zoomjoin:loadConfig()
