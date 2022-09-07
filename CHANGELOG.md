@@ -1,5 +1,7 @@
 # Changelog
 
+## Version 4 (####-##-##)
+
 ## Version 3 (2022-05-27)
 
 ### Features
