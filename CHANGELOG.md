@@ -2,6 +2,9 @@
 
 ## Version 4 (####-##-##)
 
+### Features
+* Launch zoom if it isn't running
+
 ## Version 3 (2022-05-27)
 
 ### Features

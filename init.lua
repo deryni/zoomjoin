@@ -46,6 +46,7 @@ obj.editmenu = true
 
 -- The zoom application's bundleID
 local bundleID = 'us.zoom.xos'
+local appname = 'zoom.us'
 
 -- The zoom menu
 local zoommenu = nil
@@ -309,7 +310,7 @@ function obj.joinMeeting(urlorid, password)
         return
     end
 
-    hs.application.find('zoom.us'):activate()
+    hs.application.launchOrFocus(appname)
 
     if urlorid:match('^https://') then
         return hs.urlevent.openURLWithBundle(urlorid, bundleID)
