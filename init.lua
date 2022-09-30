@@ -96,10 +96,10 @@ local function newChooser(cb, placeholder)
     return _chooser
 end
 
-local function _promptMeeting(title, button)
+local function _promptMeeting(title, buttonLabel)
     hs.focus()
 
-    local button, response = hs.dialog.textPrompt(title, '', '', button, 'Cancel')
+    local button, response = hs.dialog.textPrompt(title, '', '', buttonLabel, 'Cancel')
 
     if button == 'Cancel' then
         return
@@ -108,7 +108,18 @@ local function _promptMeeting(title, button)
     if response == '' then
         return
     elseif response == '-' then
-        return {title = '-'}
+        local _button, section = hs.dialog.textPrompt('Title for section?', 'Leave blank if none', '', 'Add', 'Cancel')
+        if _button == 'Cancel' then
+            return
+        end
+        local meetingInfo = {
+            title = response
+        }
+
+        if section ~= '' then
+            meetingInfo.section = section
+        end
+        return meetingInfo
     end
 
     local meetingInfo = {}
@@ -244,6 +255,13 @@ function obj:makeMenu()
 
         meetingMenu[#meetingMenu + 1] = m
 
+        if (disp == '-') and meeting.section then
+            meetingMenu[#meetingMenu + 1] = {
+                title = hs.styledtext.new(meeting.section, {color = hs.drawing.color.x11.gray, paragraphStyle = {alignment = 'center'}}),
+                disabled = true,
+            }
+        end
+
         -- Don't include separator entries in the chooser
         if disp ~= '-' then
             chooserChoices[#chooserChoices + 1] = c
@@ -274,11 +292,13 @@ function obj:addMeeting()
     if not newMeeting then
         return
     elseif newMeeting.title == '-' then
-        if self.meetings[#self.meetings].title ~= '-' then
-            self.meetings[#self.meetings + 1] = newMeeting
-            return true
+        if (self.meetings[#self.meetings].title == '-') and
+           (self.meetings[#self.meetings].section == newMeeting.section) then
+            return
         end
-        return
+
+        self.meetings[#self.meetings + 1] = newMeeting
+        return true
     end
 
     local button, title = hs.dialog.textPrompt('Enter meeting title', '', newMeeting.url or newMeeting.id, 'Add', 'Cancel')
