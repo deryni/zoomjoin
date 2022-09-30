@@ -292,11 +292,13 @@ function obj:addMeeting()
     if not newMeeting then
         return
     elseif newMeeting.title == '-' then
-        if self.meetings[#self.meetings].title ~= '-' then
-            self.meetings[#self.meetings + 1] = newMeeting
-            return true
+        if (self.meetings[#self.meetings].title == '-') and
+           (self.meetings[#self.meetings].section == newMeeting.section) then
+            return
         end
-        return
+
+        self.meetings[#self.meetings + 1] = newMeeting
+        return true
     end
 
     local button, title = hs.dialog.textPrompt('Enter meeting title', '', newMeeting.url or newMeeting.id, 'Add', 'Cancel')
