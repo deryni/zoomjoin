@@ -108,7 +108,18 @@ local function _promptMeeting(title, button)
     if response == '' then
         return
     elseif response == '-' then
-        return {title = '-'}
+        local _button, section = hs.dialog.textPrompt('Title for section?', 'Leave blank if none', '', 'Add', 'Cancel')
+        if _button == 'Cancel' then
+            return
+        end
+        local meetingInfo = {
+            title = response
+        }
+
+        if section ~= '' then
+            meetingInfo.section = section
+        end
+        return meetingInfo
     end
 
     local meetingInfo = {}
@@ -243,6 +254,13 @@ function obj:makeMenu()
         end
 
         meetingMenu[#meetingMenu + 1] = m
+
+        if (disp == '-') and meeting.section then
+            meetingMenu[#meetingMenu + 1] = {
+                title = hs.styledtext.new(meeting.section, {color = hs.drawing.color.x11.gray, paragraphStyle = {alignment = 'center'}}),
+                disabled = true,
+            }
+        end
 
         -- Don't include separator entries in the chooser
         if disp ~= '-' then

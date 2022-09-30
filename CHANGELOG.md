@@ -4,6 +4,7 @@
 
 ### Features
 * Launch zoom if it isn't running
+* Menu sections can now have titles
 
 ## Version 3 (2022-05-27)
 
