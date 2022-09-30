@@ -96,10 +96,10 @@ local function newChooser(cb, placeholder)
     return _chooser
 end
 
-local function _promptMeeting(title, button)
+local function _promptMeeting(title, buttonLabel)
     hs.focus()
 
-    local button, response = hs.dialog.textPrompt(title, '', '', button, 'Cancel')
+    local button, response = hs.dialog.textPrompt(title, '', '', buttonLabel, 'Cancel')
 
     if button == 'Cancel' then
         return
