@@ -1,6 +1,6 @@
 # Changelog
 
-## Version 4 (####-##-##)
+## Version 4 (2022-12-14)
 
 ### Features
 * Launch zoom if it isn't running
