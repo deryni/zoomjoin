@@ -181,6 +181,13 @@ function obj:makeMenu()
                 title = 'zoomjoin',
                 menu = {
                     {
+                        title = 'Join Meeting',
+                        fn = joinMeetingCB,
+                    },
+                    {
+                        title = '-',
+                    },
+                    {
                         title = 'Add Meeting',
                         fn = function()
                             if self:addMeeting() then
@@ -196,13 +203,6 @@ function obj:makeMenu()
                         fn = function()
                             removechooser:show()
                         end
-                    },
-                    {
-                        title = '-',
-                    },
-                    {
-                        title = 'Join Meeting',
-                        fn = joinMeetingCB,
                     },
                     {
                         title = '-',

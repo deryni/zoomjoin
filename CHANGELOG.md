@@ -6,6 +6,9 @@
 * Launch zoom if it isn't running
 * Menu sections can now have titles
 
+### Changes
+* Move the `Join Meeting` menu entry to the top of the menu
+
 ## Version 3 (2022-05-27)
 
 ### Features
